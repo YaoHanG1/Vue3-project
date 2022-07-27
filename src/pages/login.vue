@@ -3,12 +3,19 @@
     <el-col :lg="16" :md="12" class="left">
       <div>
         <div class="title">欢迎光临</div>
-        <div>2022-07-16111111111111111111111111111111111111111111111</div>
+        <div class="title">
+        <span>{{year}}-</span>
+        <span>{{month}}-</span>
+        <span class="mr-4">{{day}}  </span>
+        <span>{{hours}}:</span>
+        <span>{{minutes}}:</span>
+        <span>{{seconds}}</span>
+        </div>
       </div>
     </el-col>
     <el-col :lg="8" :md="12" class="right">
       <h2 class="login-title">欢迎回来</h2>
-      <div class="login-text">
+      <div class="login-text">  
         <span class="txt"></span>
         <span>账号密码登陆</span>
         <span class="txt"></span>
@@ -43,12 +50,28 @@
 <script setup>
 import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
 import { User, Lock } from '@element-plus/icons-vue'
-import { login, getInfo } from '../api/manager.js'
 import { useRouter } from 'vue-router';
-import { setToken } from '../composables/auth'
 import { toast } from '../composables/util'
 import { useStore } from 'vuex'
-// import store from '../store'
+import { setCookieTabs } from '../composables/auth'
+
+let year = ref(new Date().getFullYear())
+let month = ref(new Date().getMonth() < 10 ? '0' + (new Date().getMonth()+1) : new Date().getMonth()+1)
+let day = ref(new Date().getDate() < 10 ? '0' + new Date().getDate() : new Date().getDate())
+let hours = ref(new Date().getHours() < 10 ? '0' + new Date().getHours() : new Date().getHours())
+let minutes = ref(new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes())
+let seconds = ref(new Date().getSeconds() < 10 ? '0' + new Date().getSeconds() : new Date().getSeconds())
+setInterval(() => {
+  year.value = new Date().getFullYear()
+  month.value = new Date().getMonth() < 10 ? '0' + (new Date().getMonth()+1) : new Date().getMonth()+1
+  day.value = new Date().getDate() < 10 ? '0' + new Date().getDate() : new Date().getDate()
+  hours.value = new Date().getHours() < 10 ? '0' + new Date().getHours() : new Date().getHours()
+  minutes.value = new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes()
+  seconds.value = new Date().getSeconds() < 10 ? '0' + new Date().getSeconds() : new Date().getSeconds()
+  // console.log(seconds);
+}, 1000);
+
+
 // 拿到store实例
 const store = useStore()
 
@@ -58,7 +81,11 @@ const form = reactive({
   username: '',
   password: ''
 })
-
+const loca = [{
+  path: '/location',
+  name: 'location',
+  label: '主控台',
+}]
 // 绑定整个表单
 const rules = {
   username: [
@@ -80,48 +107,34 @@ const onSubmit = () => {
     loading.value = true
     store.dispatch('login', form).then(res => {
       toast('登陆成功')
+      setCookieTabs('tabsList', JSON.stringify(loca))
+
       router.push('/')
+
     }).finally(() => {
-        loading.value = false
-      })
-    // 调用封装好的axios
-    // login(form.username, form.password)
-    //   .then(res => {
-    //     // element通知弹窗
-    //     toast('登陆成功')
-    //     // 存储token跟用户信息,调用auth.js的方法传入.then里的token值
-    //     setToken(res.token)
-    //     // 获取用户信息
-    //     store.dispatch('getInfo')
-    //     // 登陆成功跳转首页
-    //     router.push('/')
-    //   }).finally(() => {
-    //     loading.value = false
-    //   })
+      loading.value = false
+    })
+
   })
 }
 // 键盘事件
-  function onKeyUp(e) {
-    if(e.key === "Enter")onSubmit()
-  }
-  
-  onMounted(() => {
-    document.addEventListener("keyup", onKeyUp)
-  })
+function onKeyUp(e) {
+  if (e.key === "Enter") onSubmit()
+}
 
-  onBeforeUnmount(() => {
-    document.removeEventListener("keyup", onKeyUp)
-  })
+onMounted(() => {
+  document.addEventListener("keyup", onKeyUp)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener("keyup", onKeyUp)
+})
+
+
+
 </script>
 
 <style scoped lang="scss">
-/* .el-col-lg-16 {
-  display: flex;
-}
-
-.el-col-lg-8 {
-  display: flex;
-} */
 .login-container {
   /* 最小高度是100vh 背景颜色是天空蓝 */
   @apply min-h-screen bg-sky-400;

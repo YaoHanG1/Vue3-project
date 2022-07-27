@@ -3,10 +3,13 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import Index from '../pages/index.vue'
 import Login from '../pages/login.vue'
 import NotFound from '../pages/404.vue'
+
+
 const routes = [
   {
     path: '/',
     component: Index,
+    redirect: '/location',
     children: [
       // 页面
       {
@@ -43,6 +46,11 @@ const routes = [
         path: '/competence',
         name: 'competence',
         component: () => import('../pages/competence.vue')
+      },
+      {
+        path: '/rote',
+        name: 'rote',
+        component: () => import('../pages/rote.vue')
       },
       {
         path: '/distributor',

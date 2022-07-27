@@ -25,3 +25,8 @@ export function getEchartsData(date) {
 export function getShopDeal() {
   return axios.get('admin/statistics2')
 }
+
+// 退出登录
+export function logout() {
+  return axios.post('/admin/logout')
+}

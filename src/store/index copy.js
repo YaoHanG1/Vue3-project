@@ -1,25 +1,20 @@
 import { createStore } from 'vuex'
 import { login, getInfo } from '../api/manager'
-import { setToken, setCookieTabs, getCookieTabs } from '../composables/auth'
+import { setToken } from '../composables/auth'
 // Create a new store instance.
 const store = createStore({
   state() {
     return {
       user: {},
       isCollapse: false,
-      tabsList: getCookieTabs() ||  [{
-            path: '/location',
-            name: 'location',
-            label: '主控台',
-          }
-        ]
-      //  || [{
-      //     path: '/location',
-      //     name: 'location',
-      //     label: '主控台',
-      //   }
-      // ]
-      ,
+      tabsList: [
+        {
+          path: '/location',
+          name: 'location',
+          label: '主控台',
+          icon: 'HomeFilled'
+        }
+      ],
       menu: [
         {
           path: '/home',
@@ -242,15 +237,12 @@ const store = createStore({
       const result = state.tabsList.findIndex(item => item.name === tag.name)
       if (result === -1) {
         state.tabsList.push(tag)
-        setCookieTabs('tabsList', JSON.stringify(state.tabsList))
-        // getTabsList()
       }
     },
     // 删除tag
     closeTag(state, val) {
       const result = state.tabsList.findIndex(item => item.name === val.name)
       state.tabsList.splice(result, 1)
-      setCookieTabs('tabsList', JSON.stringify(state.tabsList))
     },
   },
   actions: {
@@ -270,12 +262,6 @@ const store = createStore({
         }).catch(err => reject(err))
       })
     }
-  },
-  // getters: {
-  //   async tabsLists(state) {
-  //     // const result = await getTabsList()
-  //     // return result
-  //   }
-  // }
+  }
 })
 export default store

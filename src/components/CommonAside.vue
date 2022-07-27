@@ -1,19 +1,16 @@
 <template>
   <el-aside width="auto" class="aside">
-    <el-menu active-text-color="#ffd04b" background-color="#fff" class="el-menu-vertical-demo" :default-active="route.name"
-      text-color="black" @open="handleOpen" @close="handleClose" :collapse="isCollapse" width="300px" unique-opened :router="true">
+    <el-menu active-text-color="#ffd04b" background-color="#fff" class="el-menu-vertical-demo"
+      :default-active="route.name" text-color="black" @open="handleOpen" @close="handleClose" :collapse="isCollapse"
+      width="300px" unique-opened :router="true">
       <el-sub-menu :index="item.name + ''" v-for="item in menu" :key="item.label">
         <template #title>
-          <el-icon>
-            <location />
-          </el-icon>
+          <component :is="item.icon" class="icon"></component>
           <span>{{ item.label }}</span>
         </template>
         <el-menu-item-group>
-          <el-menu-item :index="item2.name+''" v-for="item2 in item.children" :key="item2.label" @click="settag(item2)">
-            <el-icon>
-              <Aim />
-            </el-icon>
+          <el-menu-item :index="item2.name + ''" v-for="item2 in item.children" :key="item2.label" @click="settag(item2)">
+            <component :is="item2.icon" class="icon"></component> 
             {{ item2.label }}
           </el-menu-item>
         </el-menu-item-group>
@@ -25,7 +22,7 @@
 <script setup>
 import { Aim, Avatar, Location, Briefcase, Expand } from '@element-plus/icons-vue'
 import { computed, ref } from 'vue'
-import {useRoute} from 'vue-router'
+import { useRoute } from 'vue-router'
 import { useStore } from 'vuex';
 const route = useRoute()
 const store = useStore()
@@ -55,6 +52,11 @@ let isCollapse = computed(() => {
   background-color: #fff;
   display: flex;
   height: 100%;
+
+  .icon {
+    width: 18px;
+    margin-right: 5px;
+  }
 
   .el-menu {
     max-height: 100%;

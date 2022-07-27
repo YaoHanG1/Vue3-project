@@ -19,8 +19,8 @@
           </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item>Action 1</el-dropdown-item>
-              <el-dropdown-item>Action 2</el-dropdown-item>
+              <el-dropdown-item>个人中心</el-dropdown-item>
+              <el-dropdown-item @click="open">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -32,10 +32,45 @@
 <script setup>
 import { Expand, ArrowDownBold } from '@element-plus/icons-vue'
 import { useStore } from 'vuex';
+import {logout} from '../api/manager'
+import {removeToken,removeCookieTags} from '../composables/auth'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 const store = useStore()
 
 function changeColl() {
   store.commit('changeCollapse')
+}
+
+const open = () => {
+  ElMessageBox.confirm(
+    '是否要退出登录',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  )
+    .then(() => {
+      logout()
+      
+      router.replace({
+        path: '/login'
+      })
+      ElMessage({
+        type: 'success',
+        message: '退出成功',
+      })
+      removeToken()
+      removeCookieTags()
+    })
+    // .catch(() => {
+    //   ElMessage({
+    //     type: 'info',
+    //     message: 'Delete canceled',
+    //   })
+    // })
 }
 </script>
 

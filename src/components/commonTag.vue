@@ -15,15 +15,19 @@ import { computed, ref } from 'vue'
 import { useStore, } from 'vuex';
 import { useRouter } from 'vue-router';
 import { useRoute } from 'vue-router';
+import { getCookieTabs } from '../composables/auth'
 const store = useStore()
 const router = useRouter()
 const route = useRoute()
 
+
+
 const tags = computed(() => {
-  return store.state.tabsList
+  return getCookieTabs()
 })
 const handleClose = (tag, index) => {
   store.commit('closeTag', tag)
+  // removeCookieTags()
   const length = tags.value.length - 1
   if (tag.name !== router.currentRoute.value.name) {
     return
